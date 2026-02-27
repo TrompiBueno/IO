@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Ilusión Óptica REAL</title>
+<style>
+body{
+    margin:0;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:black;
+    overflow:hidden;
+    font-family:monospace;
+}
+
+.scene{
+    position:relative;
+    width:400px;
+    height:400px;
+}
+
+/* CUADRADO DE X */
+.square{
+    position:absolute;
+    inset:0;
+    display:grid;
+    grid-template-columns:repeat(20,1fr);
+    grid-template-rows:repeat(20,1fr);
+    animation:spin 12s linear infinite;
+}
+
+.x{
+    color:red;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:14px;
+    user-select:none;
+}
+
+@keyframes spin{
+    from{transform:rotate(0deg);}
+    to{transform:rotate(360deg);}
+}
+
+/* PUNTO CENTRAL */
+.center{
+    position:absolute;
+    width:14px;
+    height:14px;
+    border-radius:50%;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    animation:color 2s infinite alternate;
+    z-index:3;
+}
+
+@keyframes color{
+    0%{background:cyan;}
+    50%{background:magenta;}
+    100%{background:lime;}
+}
+
+/* PUNTOS AMARILLOS */
+.yellow{
+    position:absolute;
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    background:yellow;
+    top:50%;
+    left:50%;
+    z-index:2;
+}
+</style>
+</head>
+<body>
+
+<div class="scene">
+    <div class="square" id="square"></div>
+    <div class="yellow" id="y1"></div>
+    <div class="yellow" id="y2"></div>
+    <div class="yellow" id="y3"></div>
+    <div class="center"></div>
+</div>
+
+<script>
+/* generar X */
+const square=document.getElementById("square");
+for(let i=0;i<400;i++){
+    square.innerHTML+="<div class='x'>X</div>";
+}
+
+/* órbita REAL con trigonometría */
+const dots=[
+    {el:y1,angle:0},
+    {el:y2,angle:120},
+    {el:y3,angle:240}
+];
+
+let t=0;
+function animate(){
+    t+=0.00;
+    dots.forEach(d=>{
+        const r=90;
+        const a=t+d.angle*Math.PI/180;
+        const x=Math.cos(a)*r;
+        const y=Math.sin(a)*r;
+        d.el.style.transform=
+            `translate(${x}px,${y}px)`;
+    });
+    requestAnimationFrame(animate);
+}
+animate();
+</script>
+
+</body>
+</html>
